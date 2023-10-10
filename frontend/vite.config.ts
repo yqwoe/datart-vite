@@ -123,12 +123,10 @@ export default defineConfig(({ mode }) => ({
     proxy: {
       '/api/v1': {
         changeOrigin: true,
-        // target: 'https://test-data-cube.corebrew.net/',
         target: "http://localhost:8080/"
       },
       '/resources': {
         changeOrigin: true,
-        // target: 'https://test-data-cube.corebrew.net/',
         target: "http://localhost:8080/"
       },
     },
