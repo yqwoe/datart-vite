@@ -1,0 +1,225 @@
+spring:
+  flyway:
+    baseline-on-migrate: true
+    baseline-description: BASE_LINE
+    baseline-version: "2022.02.18"
+    clean-disabled: true
+    clean-on-validation-error: false
+    validate-on-migrate: true
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://127.0.0.1:3306/datart_vite?allowMultiQueries=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false
+    username: root
+    password: 123456
+    # 连接池配置
+    druid:
+      # 初始化大小，最小，最大
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      # 配置获取连接等待超时的时间
+      max-wait: 600000000
+      #超过时间限制是否回收
+#      removeAbandoned: true
+#      #超时时间；单位为秒。180秒=3分钟
+#      removeAbandonedTimeout: 180
+#      #关闭abanded连接时输出错误日志
+#      logAbandoned: true
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位毫秒
+      time-between-eviction-runs-millis: 60000
+      # 配置一个连接在池中最小生存时间
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 1
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      # 打开 PSCache，并且指定每个连接上 PSCache 的大小
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      # 配置监控统计拦截的 Filter，去掉后监控界面 SQL 无法统计，wall 用于防火墙
+      filters: stat,wall,log4j
+      # 通过 connection-properties 属性打开 mergeSql 功能；慢 SQL 记录
+      connection-properties: druid.stat.mergeSql\=true;druid.stat.slowSqlMillis\=5000
+
+  jackson:
+    #日期格式化
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
+      FAIL_ON_UNWRAPPED_TYPE_IDENTIFIERS: false
+      #格式化输出
+      indent_output: true
+      #忽略无法转换的对象
+      fail_on_empty_beans: false
+    #设置空如何序列化
+    defaultPropertyInclusion: non_default
+    deserialization:
+      #允许对象忽略json中不存在的属性
+      fail_on_unknown_properties: false
+    parser:
+      #允许出现特殊字符和转义符
+      allow_unquoted_control_chars: true
+      #允许出现单引号
+      allow_single_quotes: true
+
+  quartz:
+    job-store-type: jdbc
+    scheduler-name: DatartScheduleCluster
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instancName: DatartScheduleCluster
+            instanceId: AUTO
+          jobStore:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            isClustered: true
+            clusterCheckinInterval: 5000
+            useProperties: true
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 10
+            threadPriority: 5
+  security:
+    oauth2:
+      resource:
+        filter-order: 3
+      enable: true
+      client:
+        registration:
+          cas:
+            client-id: test_client_2
+            client-name: '业务系统登录'
+            client-secret: ""
+            authorization-grant-type: authorization_code
+            client-authentication-method: POST
+            redirect-uri: /login/oauth2/code/cas
+            scope:
+              - select
+            provider: cas
+        provider:
+          cas:
+            authorization-uri: /oauth/authorize
+            token-uri: /oauth/token
+            user-info-uri: /oauth/profile
+            user-name-attribute: username
+            userMapping:
+              id: id
+              status: status
+              email: username
+              name: name
+  servlet:
+    multipart:
+      max-file-size: 1024MB
+      max-request-size: 1024MB
+  http2:
+    enabled: false
+  undertow:
+    io-threads: 16
+    worker-threads: 256
+    buffer-size: 1024
+    buffers-per-region: 1024
+    direct-buffers: true
+    resource-path: file:${datart.env.file-path}
+
+  web:
+    resources:
+      static-locations: file:${datart.env.file-path}
+
+  messages:
+    basename: i18n.datart_i18n
+
+  # ldap config
+
+  # ldap:
+  #   urls: ldap://{IP}:{PORT}
+  #   base: xxx
+  #   username: {username}
+  #   password: {password}
+  mail:
+    host: smtp.qq.com
+    port: 465
+    username: 470510471@qq.com
+    fromAddress: 470510471@qq.com
+    password: vnnzvcrcbyvzcbdh
+    senderName: admin
+    properties:
+      smtp:
+        starttls:
+          enable: true
+          required: true
+        auth: true
+      mail:
+        smtp:
+          ssl:
+            enable: true
+  redis:
+    host: localhost
+    port: 6379
+#    password:
+    jedis:
+      pool:
+        max-idle: 8
+        max-wait: 1ms
+        min-idle: 0
+        max-active: 8
+
+
+mybatis:
+  type-aliases-package: datart.core.entity
+  configuration:
+    use-generated-keys: false
+    map-underscore-to-camel-case: true
+
+
+server:
+  port: 8080
+  address: 0.0.0.0
+  compression:
+    enabled: true
+    mime-types: application/javascript,application/json,application/xml,text/html,text/xml,text/plain,text/css,image/*
+  ssl:
+    enabled: false
+    key-store: keystore.p12 # Absolute path
+    key-store-password: password
+    keyStoreType: PKCS12
+    keyAlias: tomcat
+
+datart:
+  migration:
+    enable: true # 是否开启数据库自动升级
+  server:
+    address: http://bi-server.com:8080
+
+  # 租户管理模式：platform-平台(默认)，team-团队
+  tenant-management-mode: team
+  # 团队管理员用户名/密码: 仅team模式且两者都不为空时重置
+  admin:
+    username: super
+    password: super123456
+
+  user:
+    register: true # 是否允许注册
+    active:
+      send-mail: ${datart.send-mail:false}  # 注册用户时是否需要邮件验证激活
+      expire-hours: ${datart.register.expire-hours:48} # 注册邮件有效期/小时
+    invite:
+      expire-hours: ${datart.invite.expire-hours:48} # 邀请邮件有效期/小时
+
+  security:
+    token:
+      secret: "d@a$t%a^r&a*t" #加密密钥
+      timeout-min: 30000  # 登录会话有效时长，单位：分钟。
+
+  env:
+    file-path: ${user.dir}/files # 服务端文件保存位置
+
+  screenshot:
+    timeout-seconds: 600000
+    webdriver-type: CHROME
+    webdriver-path: ${datart.webdriver-path:/usr/local/bin/chromedriver}

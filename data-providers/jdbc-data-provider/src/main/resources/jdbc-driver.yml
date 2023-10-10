@@ -1,0 +1,228 @@
+ACCESS:
+  db-type: ACCESS
+  db: access
+  name: ACCESS
+  driver-class: net.ucanaccess.jdbc.UcanaccessDriver
+  url-prefix: jdbc:ucanaccess://
+
+BIG_QUERY:
+  db-type: BIG_QUERY
+  db: big_query
+  name: BIG_QUERY
+  driver-class: com.simba.googlebigquery.jdbc.Driver
+  url-prefix: jdbc:bigquery://
+
+CALCITE:
+  db-type: CALCITE
+  db: calcite
+  name: CALCITE
+  driver-class: org.apache.calcite.avatica.remote.Driver
+  url-prefix: jdbc:avatica:remote
+
+CLICKHOUSE:
+  db-type: CLICKHOUSE
+  db: clickhouse
+  name: CLICKHOUSE
+  driver-class: com.clickhouse.jdbc.ClickHouseDriver
+  url-prefix: jdbc:clickhouse://
+  sql-dialect: datart.data.provider.calcite.dialect.ClickHouseSqlDialectSupport
+  adapter-class: datart.data.provider.jdbc.adapters.ClickHouseDataProviderAdapter
+
+
+DERBY:
+  db-type: DERBY
+  db: derby
+  name: DERBY
+  driver-class: org.apache.derby.client.ClientAutoloadedDriver
+  url-prefix: jdbc:derby://
+
+DB2:
+  db-type: DB2
+  db: db2
+  name: DB2
+  driver-class: com.ibm.db2.jdbc.jcc.DB2Driver
+  url-prefix: jdbc:db2://
+
+DM:
+  db-type: "dm"
+  name: "dm"
+  driver-class: "dm.jdbc.driver.DmDriver"
+  literal-quote: "'"
+  identifier-quote: "\""
+  url-prefix: "jdbc:dm://"
+  adapter-class: "datart.data.provider.jdbc.adapters.DmDataProviderAdapter"
+
+FIREBIRD:
+  db-type: FIREBIRD
+  name: FIREBIRD
+  db: firebird
+  driver-class: org.firebirdsql.jdbc.FBDriver
+  url-prefix: jdbc:firebirdsql://
+H2:
+  db-type: H2
+  name: H2
+  driver-class: org.h2.Driver
+  url-prefix: jdbc:h2
+  sql-dialect: datart.data.provider.calcite.dialect.H2Dialect
+
+HIVE:
+  db-type: HIVE
+  name: HIVE
+  db: hive
+  driver-class: org.apache.hive.jdbc.HiveDriver
+  sql-dialect: datart.data.provider.calcite.dialect.HiveSqlStdOperatorSupport
+  adapter-class: datart.data.provider.jdbc.adapters.HiveDataProviderAdapter
+  url-prefix: jdbc:hive2://
+  identifier-quote: "`"
+  identifier-end-quote: "`"
+
+HSQLDB:
+  db-type: HSQLDB
+  name: HSQLDB
+  driver-class: org.hsqldb.jdbcDriver
+  url-prefix: jdbc:hsqldb
+
+INFORMIX:
+  db-type: INFORMIX
+  name: INFORMIX
+  db: informix
+  driver-class: com.informix.jdbc.IfxDriver
+  url-prefix: jdbc:informix-sqli://
+
+INGRES:
+  db-type: INGRES
+  name: INGRES
+  db: ingres
+  driver-class: com.ingres.jdbc.IngresDriver
+  url-prefix: jdbc:ingres://
+
+INTERBASE:
+  db-type: INTERBASE
+  name: INTERBASE
+  driver-class: interbase.interclient.Driver
+  url-prefix: jdbc:interbase://
+
+JETHRO:
+  db-type: JETHRO
+  name: JETHRO
+  driver-class: com.jethrodata.JethroDriver
+  url-prefix: jdbc:JethroData://
+
+LUCIDDB:
+  db-type: LUCIDDB
+  name: LUCIDDB
+  driver-class: org.luciddb.jdbc.LucidDbClientDriver
+  url-prefix: jdbc:luciddb
+
+MSSQL:
+  db: sqlserver
+  db-type: MSSQL
+  name: MSSQL
+  sql-dialect: datart.data.provider.calcite.dialect.MsSqlStdOperatorSupport
+  adapter-class: datart.data.provider.jdbc.adapters.MsSqlDataProviderAdapter
+  driver-class: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  url-prefix: jdbc:sqlserver://
+  extract: extract
+
+
+MYSQL:
+  db: mysql
+  db-type: MYSQL
+  name: MYSQL
+  driver-class: com.mysql.cj.jdbc.Driver
+  url-prefix: jdbc:mysql://
+  sql-dialect: datart.data.provider.calcite.dialect.MysqlSqlStdOperatorSupport
+  extract: extract
+
+
+ORACLE:
+  db: oracle
+  db-type: ORACLE
+  name: ORACLE
+  driver-class: oracle.jdbc.driver.OracleDriver
+  adapter-class: datart.data.provider.jdbc.adapters.OracleDataProviderAdapter
+  url-prefix: jdbc:oracle:thin:@
+  sql-dialect: datart.data.provider.calcite.dialect.OracleSqlStdOperatorSupport
+  extract: extract
+
+
+PHOENIX:
+  db-type: PHOENIX
+  name: PHOENIX
+  driver-class: org.apache.phoenix.jdbc.PhoenixDriver
+  url-prefix: jdbc:phoenix
+
+POSTGRESQL:
+  db: postgresql
+  db-type: POSTGRESQL
+  name: POSTGRESQL
+  driver-class: org.postgresql.Driver
+  url-prefix: jdbc:postgresql://
+  extract: extract
+  sql-dialect: datart.data.provider.calcite.dialect.PostgresqlSqlDialectSupport
+
+PRESTO:
+  db-type: PRESTO
+  name: PRESTO
+  driver-class: io.prestosql.jdbc.PrestoDriver
+  url-prefix: jdbc:presto://
+  adapter-class: datart.data.provider.jdbc.adapters.PrestoDataProviderAdapter
+
+SPARK:
+  db-type: SPARK
+  name: SPARK
+  driver-class: org.apache.hive.jdbc.HiveDriver
+  url-prefix: jdbc:hive2://
+
+SQLSTREAM:
+  db-type: SQLSTREAM
+  name: SQLSTREAM
+  driver-class: com.sqlstream.jdbc.Driver
+  url-prefix: jdbc:sqlstream://
+
+NETEZZA:
+  db-type: NETEZZA
+  name: NETEZZA
+  db: netezza
+  driver-class:
+  url-prefix:
+INFOBRIGHT:
+  db-type: INFOBRIGHT
+  name: INFOBRIGHT
+  db: infobright
+  driver-class:
+  url-prefix:
+NEOVIEW:
+  db-type: NEOVIEW
+  name: NEOVIEW
+  db: neoview
+  driver-class:
+  url-prefix:
+SYBASE:
+  db-type: SYBASE
+  name: SYBASE
+  db: sybase
+  driver-class: com.sybase.jdbc3.jdbc.SybDriver
+  url-prefix: jdbc:sybase:Tds
+
+TERADATA:
+  db-type: TERADATA
+  name: TERADATA
+  driver-class: com.teradata.jdbc.TeraDriver
+  url-prefix: jdbc:teradata://
+
+VERTICA:
+  db-type: VERTICA
+  name: VERTICA
+  driver-class: com.vertica.jdbc.Driver
+  url-prefix: jdbc:vertica://
+
+
+MYSQL8:
+  db: mysql
+  db-type: MYSQL8
+  name: MYSQL8
+  driver-class: com.mysql.cj.jdbc.Driver
+  url-prefix: jdbc:mysql://
+  sql-dialect: datart.data.provider.calcite.dialect.MysqlSqlStdOperatorSupport
+  extract: extract

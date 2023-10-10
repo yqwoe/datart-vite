@@ -1,0 +1,82 @@
+{
+  "type": "JDBC",
+  "name": "jdbc-data-provider",
+  "syntax": {
+    "name": "SQL",
+    "keywords": [
+      "SELECT",
+      "FROM",
+      "JOIN"
+    ]
+  },
+  "attributes": [
+    {
+      "name": "dbType",
+      "displayName": "数据库类型",
+      "type": "string",
+      "required": true,
+      "defaultValue": ""
+    },
+    {
+      "name": "url",
+      "displayName": "数据库地址",
+      "type": "string",
+      "required": true,
+      "defaultValue": "",
+      "description": "connect url"
+    }, {
+      "name": "user",
+      "displayName": "用户名",
+      "type": "string",
+      "required": true,
+      "defaultValue": "root"
+    },
+    {
+      "name": "password",
+      "displayName": "密码",
+      "required": false,
+      "encrypt": true,
+      "defaultValue": "",
+      "type": "password"
+    },
+    {
+      "name": "driverClass",
+      "displayName": "数据库驱动",
+      "defaultValue": "",
+      "type": "string"
+    },
+    {
+      "name": "serverAggregate",
+      "displayName": "服务端聚合",
+      "type": "bool",
+      "required": false,
+      "defaultValue": false
+    },
+    {
+      "name": "enableSpecialSQL",
+      "type": "bool",
+      "required": false,
+      "defaultValue": false
+    },
+    {
+      "name": "enableSyncSchemas",
+      "type": "bool",
+      "required": false,
+      "defaultValue": true
+    },
+    {
+      "name": "syncInterval",
+      "type": "string",
+      "required": false,
+      "defaultValue": "60"
+    },
+
+    {
+      "name": "properties",
+      "displayName": "数据库连接属性",
+      "type": "object",
+      "required": false,
+      "defaultValue": ""
+    }
+  ]
+}

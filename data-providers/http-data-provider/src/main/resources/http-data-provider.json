@@ -1,0 +1,147 @@
+{
+  "type": "HTTP",
+  "name": "http-data-provider",
+  "extract": false,
+  "syntax": {
+  },
+  "attributes": [
+    {
+      "name": "schemas",
+      "type": "array",
+      "displayName": "元数据",
+      "key": "tableName",
+      "children": [
+        {
+          "name": "preUrl",
+          "displayName": "鉴权API地址",
+          "defaultValue": "http://",
+          "type": "string"
+        },
+        {
+          "name": "preMethod",
+          "displayName": "鉴权请求方法",
+          "defaultValue": "POST",
+          "type": "string",
+          "options": [
+            "GET",
+            "POST"
+          ]
+        },
+        {
+          "name": "preQueryParam",
+          "displayName": "鉴权请求参数",
+          "type": "object"
+        },
+        {
+          "name": "preBody",
+          "displayName": "鉴权请求体",
+          "type": "string"
+        },
+        {
+          "name": "preCacheTimeout",
+          "displayName": "缓存令牌超时时间",
+          "type": "string",
+          "defaultValue": "0"
+        },
+        {
+          "name": "tableName",
+          "displayName": "表名",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "name": "url",
+          "required": true,
+          "displayName": "API地址",
+          "defaultValue": "http://",
+          "type": "string"
+        },
+        {
+          "name": "method",
+          "required": true,
+          "displayName": "请求方法",
+          "defaultValue": "GET",
+          "type": "string",
+          "options": [
+            "GET",
+            "POST"
+          ]
+        },
+        {
+          "name": "property",
+          "displayName": "属性",
+          "defaultValue": "",
+          "type": "string"
+        },
+        {
+          "name": "columns",
+          "displayName": "列名",
+          "defaultValue": "",
+          "type": "schema"
+        },
+        {
+          "name": "username",
+          "displayName": "用户名",
+          "defaultValue": "",
+          "type": "string"
+        },
+        {
+          "name": "password",
+          "displayName": "密码",
+          "defaultValue": "",
+          "type": "password"
+        },
+        {
+          "name": "timeout",
+          "defaultValue": 0,
+          "displayName": "超时时间",
+          "description": "请求超时时间",
+          "type": "number"
+        },
+        {
+          "name": "responseParser",
+          "defaultValue": "",
+          "displayName": "解析器",
+          "description": "请求结果解析器，自定义解析器时，指定解析器的全类名",
+          "type": "string"
+        },
+        {
+          "name": "headers",
+          "displayName": "消息头",
+          "type": "object"
+        },
+        {
+          "name": "queryParam",
+          "displayName": "请求参数",
+          "type": "object"
+        },
+        {
+          "name": "body",
+          "displayName": "请求体",
+          "type": "string"
+        },
+        {
+          "name": "contentType",
+          "type": "string",
+          "displayName": "内容",
+          "defaultValue": "application/json"
+        }
+      ]
+    },
+    {
+      "name": "cacheEnable",
+      "required": false,
+      "defaultValue": true,
+      "displayName": "本地缓存",
+      "type": "bool",
+      "description": "是否开启本地缓存。开启后，HTTP请求结果将会缓存到服务端。"
+    },
+    {
+      "name": "cacheTimeout",
+      "required": false,
+      "displayName": "缓存超时时间",
+      "type": "string",
+      "defaultValue": "5"
+    }
+  ]
+}

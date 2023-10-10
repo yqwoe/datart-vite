@@ -1,0 +1,15 @@
+
+createTable(db, tableName, fields, primaryKeys, indexKeys)
+::=<<
+CREATE TABLE `<db>`.`<tableName>` (
+    <fields:{field|`<field.name>` <field.typeName>};separator=",\n">
+    <if(primaryKeys)>
+    ,
+    PRIMARY KEY (<primaryKeys:{pk| `<pk>`};separator=",">)
+    <endif>
+    <if(indexKeys)>
+    ,
+    <indexKeys:{idx|<idx.keys:{k|KEY `<k>` (`<idx.(k)>`)}>};separator=",\n">
+    <endif>
+) DEFAULT CHARSET=utf8;
+>>
