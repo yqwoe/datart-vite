@@ -1,0 +1,1 @@
+import{j as e}from"./entryPointFactory.769a35d1.js";function r({renderSign:i,width:s,height:n}){return i?e.jsxs(e.Fragment,{children:[e.jsx("input",{id:"headlessBrowserRenderSign",type:"hidden"}),e.jsx("input",{id:"width",type:"hidden",value:s}),e.jsx("input",{id:"height",type:"hidden",value:n})]}):e.jsx("span",{})}export{r as H};

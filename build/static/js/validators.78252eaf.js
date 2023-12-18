@@ -1,0 +1,1 @@
+function s(e){return function(n,r){return r&&(r.trim().length<6||r.trim().length>20)?Promise.reject(new Error(e)):Promise.resolve()}}function m(e,n,r){return function({getFieldValue:o}){return{validator(i,t){return t&&(t.trim().length<6||t.trim().length>20)?Promise.reject(new Error(n)):t&&o(e)!==t?Promise.reject(new Error(r)):Promise.resolve()}}}}export{m as a,s as g};

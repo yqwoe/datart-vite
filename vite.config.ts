@@ -27,6 +27,7 @@ export default defineConfig(({ mode }) => ({
   define: {
     'process.env': {},
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+    'process.env.PUBLIC_URL': JSON.stringify(process.env.PUBLIC_URL),
   },
   plugins: [
     react({
@@ -123,11 +124,11 @@ export default defineConfig(({ mode }) => ({
     proxy: {
       '/api/v1': {
         changeOrigin: true,
-        target: "http://localhost:8080/"
+        target: "http://datart-demo.retech.cc/"
       },
       '/resources': {
         changeOrigin: true,
-        target: "http://localhost:8080/"
+        target: "http://datart-demo.retech.cc/"
       },
     },
   },

@@ -1,6 +1,7 @@
 import React, { CSSProperties, useState } from 'react';
 import { Avatar as AntdAvatar, AvatarProps } from 'antd';
 import styled from 'styled-components';
+import endsWith from 'lodash/endsWith';
 
 export function Avatar(props: AvatarProps) {
   const style: CSSProperties = {};
@@ -12,7 +13,7 @@ export function Avatar(props: AvatarProps) {
   }
   if (
     typeof safeSrc === 'string' &&
-    (safeSrc.endsWith('null') || safeSrc.endsWith('undefined'))
+    (endsWith(safeSrc,'null') || endsWith(safeSrc,'undefined'))
   ) {
     setSafeSrc('');
   }

@@ -15,15 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { memo, useCallback, useContext, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
-import { Upload } from 'antd';
-import { SPACE_MD } from 'styles/StyleConstants';
-import { DeleteOutlined } from '@ant-design/icons';
-import styled from 'styled-components';
-import { BoardContext } from 'app/pages/DashBoardPage/components/BoardProvider/BoardProvider';
-import { convertImageUrl } from 'app/pages/DashBoardPage/utils';
-import { uploadBoardImage } from '../../../../slice/thunk';
+import { DeleteOutlined } from "@ant-design/icons";
+import { Upload } from "antd";
+import { BoardContext } from "app/pages/DashBoardPage/components/BoardProvider/BoardProvider";
+import { convertImageUrl } from "app/pages/DashBoardPage/utils";
+import { memo, useCallback, useContext, useMemo } from "react";
+import { useDispatch } from "react-redux";
+import styled from "styled-components";
+import { SPACE_MD } from "styles/StyleConstants";
+import { uploadBoardImage } from "../../../../slice/thunk";
 
 export const UploadDragger: React.FC<{
   value: string;
@@ -34,35 +34,36 @@ export const UploadDragger: React.FC<{
   const { boardId } = useContext(BoardContext);
 
   const beforeUpload = useCallback(
-    async info => {
+    async (info) => {
       const formData = new FormData();
-      formData.append('file', info);
+      formData.append("file", info);
       dispatch(
         uploadBoardImage({
           boardId,
           fileName: info.name,
           formData: formData,
           resolve: onChange,
-        }),
+        })
       );
       return false;
     },
-    [boardId, dispatch, onChange],
+    [boardId, dispatch, onChange]
   );
   const getImageError = useCallback(() => {
-    console.warn('get BackgroundImageError');
+    console.warn("get BackgroundImageError");
   }, []);
   const delImageUrl = useCallback(
-    e => {
+    (e) => {
       e.stopPropagation();
-      onChange('');
+      onChange("");
     },
-    [onChange],
+    [onChange]
   );
   const imgUrl = useMemo(() => convertImageUrl(value), [value]);
   return (
     <StyleUpload
-      name={'upload-image'}
+      accept=".jpg,.jpeg,.png,.gif,.svg"
+      name={"upload-image"}
       className="datart-ant-upload"
       beforeUpload={beforeUpload}
       multiple={false}
@@ -92,7 +93,7 @@ const StyleUpload = styled(Upload.Dragger)`
     left: 50%;
     display: none;
     font-size: 1.5rem;
-    color: ${p => p.theme.textColorDisabled};
+    color: ${(p) => p.theme.textColorDisabled};
     transform: translate(-50%, -50%);
   }
 
@@ -107,5 +108,5 @@ const StyleUpload = styled(Upload.Dragger)`
 `;
 
 const Placeholder = styled.p`
-  color: ${p => p.theme.textColorLight};
+  color: ${(p) => p.theme.textColorLight};
 `;

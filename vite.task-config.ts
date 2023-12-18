@@ -74,7 +74,8 @@ export default defineConfig({
         }),
         replace({
           'console.log': '//console.log',
-          'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+          'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+          'process.env.PUBLIC_URL': JSON.stringify(process.env.PUBLIC_URL),
         }),
       ],
     },

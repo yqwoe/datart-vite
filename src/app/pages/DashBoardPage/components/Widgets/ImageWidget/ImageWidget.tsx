@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { memo, useContext } from 'react';
+import { memo, useCallback, useContext, useEffect, useRef } from 'react';
 import { Space } from 'antd';
 import { WidgetContext } from 'app/pages/DashBoardPage/components/WidgetProvider/WidgetProvider';
 import {
@@ -31,18 +31,57 @@ import { WidgetDropdownList } from '../../WidgetComponents/WidgetDropdownList';
 import { WidgetTitle } from '../../WidgetComponents/WidgetTitle';
 import { WidgetWrapper } from '../../WidgetComponents/WidgetWrapper';
 import { ImageWidgetCore } from './ImageWidgetCore';
+import {useDispatch} from 'react-redux'
+import { WidgetInfoContext } from '../../WidgetProvider/WidgetInfoProvider';
+import { editBoardStackActions, editWidgetInfoActions } from 'app/pages/DashBoardPage/pages/BoardEditor/slice';
+import { HiddenUploader } from './HiddenUploader';
+import { Picture } from './Picture';
+import styled from 'styled-components';
 
 export const ImageWidget: React.FC<{ hideTitle: boolean }> = memo(
   ({ hideTitle }) => {
+    const dispatch = useDispatch();
     const widget = useContext(WidgetContext);
+    const widgetInfo = useContext(WidgetInfoContext);
     const { editing } = useContext(BoardContext);
     const title = getWidgetTitle(widget.config.customConfig.props);
     title.title = widget.config.name;
     const { background, border, padding } = getWidgetBaseStyle(
       widget.config.customConfig.props,
     );
+
+    const showBackground =
+      !background.image && background.color === 'transparent';
+    const uploaderRef = useRef<any>();
+
+    useEffect(() => {
+      if (widgetInfo.editing) {
+        uploaderRef.current?.onClick();
+      }
+    }, [widgetInfo.editing]);
+
+    const uploaderChange = useCallback(
+      (url: string) => {
+        dispatch(
+          editBoardStackActions.updateWidgetStyleConfigByPath({
+            ancestors: [0, 0],
+            configItem: {
+              key: 'background',
+              comType: 'background',
+              label: 'background.background',
+              value: { ...background, image: url },
+            },
+            wid: widget.id,
+          }),
+        );
+        dispatch(editWidgetInfoActions.closeWidgetEditing(widget.id));
+      },
+      [dispatch, widget.id, background],
+    );
+
     return (
-      <WidgetWrapper background={background} border={border} padding={padding}>
+      <>
+        <WidgetWrapper background={background} border={border} padding={padding}>
         <div style={ZIndexStyle}>
           {!hideTitle && <WidgetTitle title={title} />}
 
@@ -62,6 +101,29 @@ export const ImageWidget: React.FC<{ hideTitle: boolean }> = memo(
           </Space>
         </StyledWidgetToolBar>
       </WidgetWrapper>
+      {editing && (
+          <HiddenUploader onChange={uploaderChange} ref={uploaderRef} />
+        )}
+        {editing && showBackground && (
+          <ImageWidgetBackground>
+            <Picture />
+          </ImageWidgetBackground>
+        )}
+      </>
     );
   },
 );
+
+
+const ImageWidgetBackground = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;

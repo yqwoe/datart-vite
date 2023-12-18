@@ -196,7 +196,6 @@ const widgetInfoRecordSlice = createSlice({
     closeWidgetEditing(state, action: PayloadAction<string>) {
       const id = action.payload;
       if (id) {
-        state[id].selected = false;
         state[id].editing = false;
       } else {
         for (const key of Object.keys(state)) {

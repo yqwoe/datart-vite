@@ -1,20 +1,16 @@
-import migrateWidgetChartConfig from 'app/migration/BoardConfig/migrateWidgetChartConfig';
-import migrateWidgetConfig from 'app/migration/BoardConfig/migrateWidgetConfig';
-import { migrateWidgets } from 'app/migration/BoardConfig/migrateWidgets';
-import { ChartDataRequestBuilder } from 'app/models/ChartDataRequestBuilder';
-import { PendingChartDataRequestFilter } from 'app/types/ChartDataRequest';
-import ChartDataView from 'app/types/ChartDataView';
-import { View } from 'app/types/View';
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import { RootState } from 'types';
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import migrateWidgetChartConfig from "app/migration/BoardConfig/migrateWidgetChartConfig";
+import migrateWidgetConfig from "app/migration/BoardConfig/migrateWidgetConfig";
+import { migrateWidgets } from "app/migration/BoardConfig/migrateWidgets";
+import { ChartDataRequestBuilder } from "app/models/ChartDataRequestBuilder";
 import {
   boardDrillManager,
   EDIT_PREFIX,
-} from 'app/pages/DashBoardPage/components/BoardDrillManager/BoardDrillManager';
-import widgetManager from 'app/pages/DashBoardPage/components/WidgetManager';
-import { getControlOptionQueryParams } from 'app/pages/DashBoardPage/components/Widgets/ControllerWidget/config';
-import { ORIGINAL_TYPE_MAP } from 'app/pages/DashBoardPage/constants';
-import { boardActions } from 'app/pages/DashBoardPage/pages/Board/slice';
+} from "app/pages/DashBoardPage/components/BoardDrillManager/BoardDrillManager";
+import widgetManager from "app/pages/DashBoardPage/components/WidgetManager";
+import { getControlOptionQueryParams } from "app/pages/DashBoardPage/components/Widgets/ControllerWidget/config";
+import { ORIGINAL_TYPE_MAP } from "app/pages/DashBoardPage/constants";
+import { boardActions } from "app/pages/DashBoardPage/pages/Board/slice";
 import {
   BoardState,
   ControllerWidgetContent,
@@ -23,42 +19,45 @@ import {
   SaveDashboard,
   ServerDatachart,
   WidgetData,
-} from 'app/pages/DashBoardPage/pages/Board/slice/types';
-import { Widget } from 'app/pages/DashBoardPage/types/widgetTypes';
-import { getChartWidgetRequestParams } from 'app/pages/DashBoardPage/utils';
+} from "app/pages/DashBoardPage/pages/Board/slice/types";
+import { Widget } from "app/pages/DashBoardPage/types/widgetTypes";
+import { getChartWidgetRequestParams } from "app/pages/DashBoardPage/utils";
 import {
   getChartDataView,
   getDashBoardByResBoard,
   getDataChartsByServer,
   getInitBoardInfo,
-} from 'app/pages/DashBoardPage/utils/board';
+} from "app/pages/DashBoardPage/utils/board";
 import {
   convertWrapChartWidget,
   createToSaveWidgetGroup,
   createWidgetInfo,
   getWidgetMap,
-} from 'app/pages/DashBoardPage/utils/widget';
-import { Variable } from 'app/pages/MainPage/pages/VariablePage/slice/types';
-import { getDataChartMap } from './../../../utils/board';
-import { adjustWidgetsToBoard } from './../../../utils/widget';
-import { filterSqlOperatorName } from 'app/utils/internalChartHelper';
-import { request2 } from 'utils/request';
-import { getErrorMessage, uuidv4 } from 'utils/utils';
+} from "app/pages/DashBoardPage/utils/widget";
+import { Variable } from "app/pages/MainPage/pages/VariablePage/slice/types";
+import { PendingChartDataRequestFilter } from "app/types/ChartDataRequest";
+import ChartDataView from "app/types/ChartDataView";
+import { View } from "app/types/View";
+import { filterSqlOperatorName } from "app/utils/internalChartHelper";
+import { RootState } from "types";
+import { request2 } from "utils/request";
+import { getErrorMessage, uuidv4 } from "utils/utils";
 import {
   editBoardStackActions,
   editDashBoardInfoActions,
   editWidgetDataActions,
   editWidgetInfoActions,
   editWidgetSelectedItemsActions,
-} from '.';
-import { BoardInfo, BoardType, ServerDashboard } from '../../Board/slice/types';
-import { addVariablesToBoard } from './actions/actions';
+} from ".";
+import { BoardInfo, BoardType, ServerDashboard } from "../../Board/slice/types";
+import { adjustWidgetsToBoard } from "./../../../utils/widget";
+import { addVariablesToBoard } from "./actions/actions";
 import {
   boardInfoState,
   editBoardStackState,
   selectEditBoard,
-} from './selectors';
-import { EditBoardState, HistoryEditBoard } from './types';
+} from "./selectors";
+import { EditBoardState, HistoryEditBoard } from "./types";
 
 /**
  * @param ''
@@ -69,16 +68,16 @@ export const getEditBoardDetail = createAsyncThunk<
   string,
   { state: RootState }
 >(
-  'editBoard/getEditBoardDetail',
+  "editBoard/getEditBoardDetail",
   async (dashboardId, { getState, dispatch }) => {
     if (!dashboardId) {
       return null;
     }
     //2 从 editor 内存中取
     const editDashboard = selectEditBoard(
-      getState() as unknown as {
+      (getState() as unknown) as {
         editBoard: HistoryEditBoard;
-      },
+      }
     );
 
     if (editDashboard?.id === dashboardId) {
@@ -86,7 +85,7 @@ export const getEditBoardDetail = createAsyncThunk<
     }
     dispatch(fetchEditBoardDetail(dashboardId));
     return null;
-  },
+  }
 );
 
 export const fetchEditBoardDetail = createAsyncThunk<
@@ -94,13 +93,13 @@ export const fetchEditBoardDetail = createAsyncThunk<
   string,
   { state: RootState }
 >(
-  'editBoard/fetchEditBoardDetail',
+  "editBoard/fetchEditBoardDetail",
   async (dashboardId, { getState, dispatch }) => {
     if (!dashboardId) {
       return null;
     }
     const { data } = await request2<ServerDashboard>(
-      `/viz/dashboards/${dashboardId}`,
+      `/viz/dashboards/${dashboardId}`
     );
 
     const dashboard = getDashBoardByResBoard(data);
@@ -113,7 +112,7 @@ export const fetchEditBoardDetail = createAsyncThunk<
     // TODO
     const dataCharts: DataChart[] = getDataChartsByServer(
       serverDataCharts,
-      serverViews,
+      serverViews
     );
     let migratedWidgets = migrateWidgets(serverWidgets, boardType);
     migratedWidgets = migrateWidgetConfig(migratedWidgets);
@@ -122,12 +121,14 @@ export const fetchEditBoardDetail = createAsyncThunk<
       migratedWidgets, //todo
       dataCharts,
       boardType,
-      serverViews,
+      serverViews
     );
-    const widgetInfos = Object.keys(widgetMap).map(id => createWidgetInfo(id));
+    const widgetInfos = Object.keys(widgetMap).map((id) =>
+      createWidgetInfo(id)
+    );
     // TODO xld migration about filter
 
-    const widgetIds = serverWidgets.map(w => w.id);
+    const widgetIds = serverWidgets.map((w) => w.id);
     // const boardInfo = getInitBoardInfo({ id: dashboard.id, widgetIds });
 
     const boardInfo = getInitBoardInfo({ id: dashboard.id, widgetIds });
@@ -138,7 +139,7 @@ export const fetchEditBoardDetail = createAsyncThunk<
       boardActions.setDataChartToMap({
         dashboardId: dashboard.id,
         dataCharts: allDataCharts,
-      }),
+      })
     );
     const viewViews = getChartDataView(serverViews, allDataCharts);
 
@@ -152,10 +153,10 @@ export const fetchEditBoardDetail = createAsyncThunk<
       editBoardStackActions.setBoardToEditStack({
         dashBoard: dashboard,
         widgetRecord: widgetMap,
-      }),
+      })
     );
     return null;
-  },
+  }
 );
 
 /**
@@ -167,17 +168,17 @@ export const toUpdateDashboard = createAsyncThunk<
   { boardId: string; callback?: () => void },
   { state: RootState }
 >(
-  'editBoard/toUpdateDashboard',
+  "editBoard/toUpdateDashboard",
   async ({ boardId, callback }, { getState, dispatch }) => {
     const { dashBoard, widgetRecord } = editBoardStackState(
-      getState() as unknown as {
+      (getState() as unknown) as {
         editBoard: HistoryEditBoard;
-      },
+      }
     );
     const boardInfo = boardInfoState(
-      getState() as { editBoard: EditBoardState },
+      getState() as { editBoard: EditBoardState }
     );
-    const boardState = getState() as unknown as { board: BoardState };
+    const boardState = (getState() as unknown) as { board: BoardState };
 
     const { dataChartMap, viewMap } = boardState.board;
     const widgets = convertWrapChartWidget({
@@ -198,11 +199,11 @@ export const toUpdateDashboard = createAsyncThunk<
 
     await request2<any>({
       url: `viz/dashboards/${dashBoard.id}`,
-      method: 'put',
+      method: "put",
       data: updateData,
     });
     callback?.();
-  },
+  }
 );
 /**
  * @param 'Widget[]'
@@ -212,16 +213,16 @@ export const addWidgetsToEditBoard = createAsyncThunk<
   null,
   Widget[],
   { state: RootState }
->('editBoard/addWidgetsToEditBoard', (widgets, { getState, dispatch }) => {
+>("editBoard/addWidgetsToEditBoard", (widgets, { getState, dispatch }) => {
   const { dashBoard } = editBoardStackState(
-    getState() as unknown as {
+    (getState() as unknown) as {
       editBoard: HistoryEditBoard;
-    },
+    }
   );
   const { layouts } = boardInfoState(
-    getState() as { editBoard: EditBoardState },
+    getState() as { editBoard: EditBoardState }
   );
-  const widgetInfos = widgets.map(item => createWidgetInfo(item.id));
+  const widgetInfos = widgets.map((item) => createWidgetInfo(item.id));
   const updatedWidgets = adjustWidgetsToBoard({
     widgets,
     boardType: dashBoard.config.type,
@@ -239,16 +240,16 @@ export const addGroupWidgetToEditBoard = createAsyncThunk<
   null,
   Widget[],
   { state: RootState }
->('editBoard/addGroupWidgetToEditBoard', (widgets, { getState, dispatch }) => {
+>("editBoard/addGroupWidgetToEditBoard", (widgets, { getState, dispatch }) => {
   const { dashBoard } = editBoardStackState(
-    getState() as unknown as {
+    (getState() as unknown) as {
       editBoard: HistoryEditBoard;
-    },
+    }
   );
   const { layouts } = boardInfoState(
-    getState() as { editBoard: EditBoardState },
+    getState() as { editBoard: EditBoardState }
   );
-  const widgetInfos = widgets.map(t => createWidgetInfo(t.id));
+  const widgetInfos = widgets.map((t) => createWidgetInfo(t.id));
   const updatedWidgets = adjustWidgetsToBoard({
     widgets,
     boardType: dashBoard.config.type,
@@ -267,19 +268,22 @@ export const addDataChartWidgets = createAsyncThunk<
   { boardId: string; chartIds: string[]; boardType: BoardType },
   { state: RootState }
 >(
-  'editBoard/addDataChartWidgets',
+  "editBoard/addDataChartWidgets",
   async ({ boardId, chartIds, boardType }, { getState, dispatch }) => {
     const {
-      data: { datacharts, views, viewVariables },
+      data: { datacharts: serverDataCharts, views, viewVariables },
     } = await request2<{
       datacharts: ServerDatachart[];
       views: View[];
       viewVariables: Record<string, Variable[]>;
     }>({
       url: `viz/datacharts?datachartIds=${chartIds.join()}`,
-      method: 'get',
+      method: "get",
     });
-    const dataCharts: DataChart[] = getDataChartsByServer(datacharts, views);
+    const dataCharts: DataChart[] = getDataChartsByServer(
+      serverDataCharts,
+      views
+    );
     const dashboardDataChartMap = datacharts.reduce<
       Record<string, ServerDatachart>
     >((acc, cur) => {
@@ -291,11 +295,11 @@ export const addDataChartWidgets = createAsyncThunk<
       boardActions.setDataChartToMap({
         dashboardId: boardId,
         dataCharts,
-      }),
+      })
     );
     dispatch(boardActions.setViewMap(viewViews));
 
-    const widgets = chartIds.map(dcId => {
+    const widgets = chartIds.map((dcId) => {
       const dataChart = dashboardDataChartMap[dcId];
       const viewIds = dataChart.viewId ? [dataChart.viewId] : [];
       const widget = widgetManager
@@ -312,11 +316,11 @@ export const addDataChartWidgets = createAsyncThunk<
     });
     dispatch(addWidgetsToEditBoard(widgets));
 
-    Object.values(viewVariables).forEach(variables => {
+    Object.values(viewVariables).forEach((variables) => {
       dispatch(addVariablesToBoard(variables));
     });
     return null;
-  },
+  }
 );
 
 // addWrapChartWidget
@@ -331,15 +335,15 @@ export const addWrapChartWidget = createAsyncThunk<
   },
   { state: RootState }
 >(
-  'editBoard/addWrapChartWidget',
+  "editBoard/addWrapChartWidget",
   async (
     { boardId, chartId, boardType, dataChart, view },
-    { getState, dispatch },
+    { getState, dispatch }
   ) => {
     const dataCharts = [dataChart];
     const viewViews = view ? [view] : [];
     dispatch(
-      boardActions.setDataChartToMap({ dashboardId: boardId, dataCharts }),
+      boardActions.setDataChartToMap({ dashboardId: boardId, dataCharts })
     );
     dispatch(boardActions.setViewMap(viewViews));
     const widget = widgetManager.toolkit(ORIGINAL_TYPE_MAP.ownedChart).create({
@@ -354,7 +358,7 @@ export const addWrapChartWidget = createAsyncThunk<
     dispatch(addVariablesToBoard(view?.variables));
 
     return null;
-  },
+  }
 );
 
 export const addChartWidget = createAsyncThunk<
@@ -365,24 +369,24 @@ export const addChartWidget = createAsyncThunk<
     boardType: BoardType;
     dataChart: DataChart;
     view: ChartDataView;
-    subType: 'widgetChart' | 'dataChart';
+    subType: "widgetChart" | "dataChart";
   },
   { state: RootState }
 >(
-  'editBoard/addChartWidget',
+  "editBoard/addChartWidget",
   async (
     { boardId, chartId, boardType, dataChart, view, subType },
-    { dispatch },
+    { dispatch }
   ) => {
     const dataCharts = [dataChart];
     const viewViews = [view];
     dispatch(
-      boardActions.setDataChartToMap({ dashboardId: boardId, dataCharts }),
+      boardActions.setDataChartToMap({ dashboardId: boardId, dataCharts })
     );
     dispatch(boardActions.setViewMap(viewViews));
 
     const originalType =
-      subType === 'dataChart'
+      subType === "dataChart"
         ? ORIGINAL_TYPE_MAP.linkedChart
         : ORIGINAL_TYPE_MAP.ownedChart;
 
@@ -397,7 +401,7 @@ export const addChartWidget = createAsyncThunk<
     dispatch(addWidgetsToEditBoard([widget]));
     dispatch(addVariablesToBoard(view.variables));
     return null;
-  },
+  }
 );
 
 export const renderedEditWidgetAsync = createAsyncThunk<
@@ -405,12 +409,12 @@ export const renderedEditWidgetAsync = createAsyncThunk<
   { boardId: string; widgetId: string },
   { state: RootState }
 >(
-  'editBoard/renderedEditWidgetAsync',
+  "editBoard/renderedEditWidgetAsync",
   async ({ boardId, widgetId }, { getState, dispatch, rejectWithValue }) => {
     const { widgetRecord: WidgetMap } = editBoardStackState(
-      getState() as unknown as {
+      (getState() as unknown) as {
         editBoard: HistoryEditBoard;
-      },
+      }
     );
     const curWidget = WidgetMap[widgetId];
     if (!curWidget) return null;
@@ -420,7 +424,7 @@ export const renderedEditWidgetAsync = createAsyncThunk<
     // 2 widget getData
     dispatch(getEditWidgetData({ widget: curWidget }));
     return null;
-  },
+  }
 );
 
 //
@@ -433,18 +437,18 @@ export const uploadBoardImage = createAsyncThunk<
     resolve: (url: string) => void;
   }
 >(
-  'editBoard/uploadBoardImage',
+  "editBoard/uploadBoardImage",
   async ({ boardId, formData, fileName, resolve }, { getState, dispatch }) => {
     const { data } = await request2<string>({
-      url: `files/viz/image?ownerType=${'DASHBOARD'}&ownerId=${boardId}&fileName=${
-        uuidv4() + '@' + fileName
+      url: `files/viz/image?ownerType=${"DASHBOARD"}&ownerId=${boardId}&fileName=${
+        uuidv4() + "@" + fileName
       }`,
-      method: 'POST',
+      method: "POST",
       data: formData,
     });
     resolve(data);
     return data;
-  },
+  }
 );
 
 export const getEditWidgetData = createAsyncThunk<
@@ -452,17 +456,17 @@ export const getEditWidgetData = createAsyncThunk<
   { widget: Widget; option?: getDataOption },
   { state: RootState }
 >(
-  'editBoard/getEditWidgetData',
+  "editBoard/getEditWidgetData",
   ({ widget, option }, { getState, dispatch }) => {
     dispatch(editWidgetInfoActions.renderedWidgets([widget.id]));
-    if (widget.config.type === 'chart') {
+    if (widget.config.type === "chart") {
       dispatch(getEditChartWidgetDataAsync({ widgetId: widget.id, option }));
     }
-    if (widget.config.type === 'controller') {
+    if (widget.config.type === "controller") {
       dispatch(getEditControllerOptions(widget.id));
     }
     return null;
-  },
+  }
 );
 
 export const syncEditBoardWidgetChartDataAsync = createAsyncThunk<
@@ -478,7 +482,7 @@ export const syncEditBoardWidgetChartDataAsync = createAsyncThunk<
   },
   { state: RootState }
 >(
-  'board/syncEditBoardWidgetChartDataAsync',
+  "board/syncEditBoardWidgetChartDataAsync",
   async (
     {
       boardId,
@@ -489,11 +493,11 @@ export const syncEditBoardWidgetChartDataAsync = createAsyncThunk<
       tempFilters,
       variableParams,
     },
-    { getState, dispatch },
+    { getState, dispatch }
   ) => {
     const boardState = getState() as { board: BoardState };
     const rootState = getState() as RootState;
-    const stackEditBoard = rootState.editBoard as unknown as HistoryEditBoard;
+    const stackEditBoard = (rootState.editBoard as unknown) as HistoryEditBoard;
     const { widgetRecord: widgetMap } = stackEditBoard.stack.present;
     const curWidget = widgetMap[widgetId];
     if (!curWidget) {
@@ -509,7 +513,7 @@ export const syncEditBoardWidgetChartDataAsync = createAsyncThunk<
     const chartDataView = viewMap?.[dataChart?.viewId];
     const requestParams = new ChartDataRequestBuilder(
       {
-        id: chartDataView?.id || '',
+        id: chartDataView?.id || "",
         config: chartDataView?.config || {},
         meta: chartDataView?.meta,
         computedFields: dataChart?.config?.computedFields || [],
@@ -518,7 +522,7 @@ export const syncEditBoardWidgetChartDataAsync = createAsyncThunk<
       dataChart?.config?.chartConfig?.settings,
       {},
       false,
-      dataChart?.config?.aggregation,
+      dataChart?.config?.aggregation
     )
       .addVariableParams(variableParams)
       .addExtraSorters(option?.sorters as any[])
@@ -528,35 +532,35 @@ export const syncEditBoardWidgetChartDataAsync = createAsyncThunk<
 
     const { data } = await request2<WidgetData>(
       {
-        method: 'POST',
+        method: "POST",
         url: `data-provider/execute`,
         data: requestParams,
       },
       undefined,
       {
-        onRejected: async error => {
+        onRejected: async (error) => {
           await dispatch(
             editWidgetInfoActions.setWidgetErrInfo({
               boardId,
               widgetId,
               errInfo: getErrorMessage(error),
-              errorType: 'request',
-            }),
+              errorType: "request",
+            })
           );
           await dispatch(
             editWidgetDataActions.setWidgetData({
               wid: widgetId,
               data: undefined,
-            }),
+            })
           );
         },
-      },
+      }
     );
     await dispatch(
       editWidgetDataActions.setWidgetData({
         wid: widgetId,
         data: { ...data, id: widgetId },
-      }),
+      })
     );
     await dispatch(editWidgetInfoActions.renderedWidgets([widgetId]));
     await dispatch(
@@ -569,25 +573,25 @@ export const syncEditBoardWidgetChartDataAsync = createAsyncThunk<
           tempFilters: tempFilters,
           variables: variableParams,
         },
-      }),
+      })
     );
     await dispatch(
       editWidgetInfoActions.changePageInfo({
         boardId,
         widgetId,
         pageInfo: data?.pageInfo,
-      }),
+      })
     );
     await dispatch(
       editWidgetInfoActions.setWidgetErrInfo({
         boardId,
         widgetId,
         errInfo: undefined,
-        errorType: 'request',
-      }),
+        errorType: "request",
+      })
     );
     return null;
-  },
+  }
 );
 
 export const getEditChartWidgetDataAsync = createAsyncThunk<
@@ -598,11 +602,11 @@ export const getEditChartWidgetDataAsync = createAsyncThunk<
   },
   { state: RootState }
 >(
-  'editBoard/getEditChartWidgetDataAsync',
+  "editBoard/getEditChartWidgetDataAsync",
   async ({ widgetId, option }, { getState, dispatch, rejectWithValue }) => {
     const rootState = getState() as RootState;
     dispatch(editWidgetInfoActions.renderedWidgets([widgetId]));
-    const stackEditBoard = rootState.editBoard as unknown as HistoryEditBoard;
+    const stackEditBoard = (rootState.editBoard as unknown) as HistoryEditBoard;
     const { widgetRecord: widgetMap } = stackEditBoard.stack.present;
     const editBoard = rootState.editBoard;
     const boardInfo = editBoard?.boardInfo as BoardInfo;
@@ -634,57 +638,57 @@ export const getEditChartWidgetDataAsync = createAsyncThunk<
     let widgetData;
     const { data } = await request2<WidgetData>(
       {
-        method: 'POST',
+        method: "POST",
         url: `data-provider/execute`,
         data: requestParams,
       },
       undefined,
       {
-        onRejected: async error => {
+        onRejected: async (error) => {
           await dispatch(
             editWidgetInfoActions.setWidgetErrInfo({
               widgetId,
               errInfo: (error as any)?.message as any,
-              errorType: 'request',
-            }),
+              errorType: "request",
+            })
           );
           await dispatch(
             editWidgetDataActions.setWidgetData({
               wid: widgetId,
               data: undefined,
-            }),
+            })
           );
         },
-      },
+      }
     );
     widgetData = data;
     await dispatch(
       editWidgetDataActions.setWidgetData({
         wid: widgetId,
         data: filterSqlOperatorName(requestParams, widgetData) as WidgetData,
-      }),
+      })
     );
     await dispatch(
       editWidgetInfoActions.changePageInfo({
         widgetId,
         pageInfo: data?.pageInfo,
-      }),
+      })
     );
     await dispatch(
       editWidgetInfoActions.setWidgetErrInfo({
         widgetId,
         errInfo: undefined,
-        errorType: 'request',
-      }),
+        errorType: "request",
+      })
     );
     await dispatch(
       editWidgetSelectedItemsActions.changeSelectedItemsInEditor({
         wid: widgetId,
         data: [],
-      }),
+      })
     );
     return null;
-  },
+  }
 );
 
 export const getEditControllerOptions = createAsyncThunk<
@@ -692,11 +696,11 @@ export const getEditControllerOptions = createAsyncThunk<
   string,
   { state: RootState }
 >(
-  'editBoard/getEditControllerOptions',
+  "editBoard/getEditControllerOptions",
   async (widgetId, { getState, dispatch }) => {
     dispatch(editWidgetInfoActions.renderedWidgets([widgetId]));
     const rootState = getState() as RootState;
-    const stackEditBoard = rootState.editBoard as unknown as HistoryEditBoard;
+    const stackEditBoard = (rootState.editBoard as unknown) as HistoryEditBoard;
     const { widgetRecord: widgetMap } = stackEditBoard.stack.present;
     const widget = widgetMap[widgetId];
     if (!widget) return null;
@@ -725,7 +729,7 @@ export const getEditControllerOptions = createAsyncThunk<
     }
     let widgetData;
     const { data } = await request2<WidgetData>({
-      method: 'POST',
+      method: "POST",
       url: `data-provider/execute`,
       data: requestParams,
     });
@@ -734,9 +738,9 @@ export const getEditControllerOptions = createAsyncThunk<
       editWidgetDataActions.setWidgetData({
         wid: widgetId,
         data: filterSqlOperatorName(requestParams, widgetData) as WidgetData,
-      }),
+      })
     );
 
     return null;
-  },
+  }
 );

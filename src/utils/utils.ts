@@ -16,6 +16,13 @@ import * as uuid from 'uuid';
 
 export const uuidv4 = uuid.v4;
 
+// For environments that do not support crypto.getRandomValues, such as nashorn.
+export function universalUUID() {
+  return typeof crypto === 'undefined'
+    ? `_${Math.random().toString(36).substring(2)}`
+    : uuidv4();
+}
+
 export function errorHandle(error) {
   if (error?.response) {
     message.destroy();

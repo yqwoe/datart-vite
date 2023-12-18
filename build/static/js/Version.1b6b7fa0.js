@@ -1,0 +1,1 @@
+import{w as s,y as t,e as i,j as n}from"./entryPointFactory.769a35d1.js";function a({version:o}){const e=i("global");return o?n.jsxs(l,{children:[e("version"),": ",o]}):null}const l=s.h3.withConfig({displayName:"Version__Title",componentId:"sc-1w557ef-0"})(["position:absolute;right:",";bottom:",";color:",";"],t,t,o=>o.theme.textColorDisabled);export{a as V};
