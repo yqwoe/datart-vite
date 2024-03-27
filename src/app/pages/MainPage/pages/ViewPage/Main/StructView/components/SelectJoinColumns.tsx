@@ -57,7 +57,7 @@ const SelectJoinColumns = memo(
       const tableName = structure.table;
       const mainColumn = getTableAllColumns(tableName, currentDatabaseSchemas);
       const childrenData = mainColumn?.map((v, i) => {
-        return { title: v, key: [...tableName, v] };
+        return { title: v, key: [...tableName, v].join('.') };
       });
       const joinTable: any = [];
 
@@ -70,7 +70,7 @@ const SelectJoinColumns = memo(
         const childrenData = joinColumn?.map((v, i) => {
           return {
             title: v,
-            key: [...tableName, v],
+            key: [...tableName, v].join('.'),
           };
         });
         joinTable.push({
@@ -103,7 +103,7 @@ const SelectJoinColumns = memo(
       const childrenData = joinColumn?.map((v, i) => {
         return {
           title: v,
-          key: [...joinTableName, v],
+          key: [...joinTableName, v].join('.'),
         };
       });
       const treeData: any = [
@@ -126,17 +126,18 @@ const SelectJoinColumns = memo(
         <FormItem
           name={'left' + joinIndex + conditionsIndex}
           rules={[{ required: true, message: t('selectField') }]}
-          getValueFromEvent={e => (e ? e.slice(-1) : '')}
+{/*           getValueFromEvent={e => (e ? e.slice(-1) : '')} */}
         >
           <ColumnSelect
             popupMatchSelectWidth={false}
             allowClear
             placeholder={t('selectField')}
             treeDefaultExpandAll={true}
-            value={joinTable.conditions?.[conditionsIndex]?.left.slice(-1)}
+            fieldNames={{ label: 'title', value: 'key', children: 'children' }}
+            value={joinTable.conditions?.[conditionsIndex]?.left}
             onChange={columnName => {
               allowManage &&
-                onChange(columnName || [], 'left', conditionsIndex);
+                onChange(columnName?.split('.') || [], 'left', conditionsIndex);
             }}
             treeIcon={true}
             treeData={handleLeftColumn()}
@@ -146,17 +147,18 @@ const SelectJoinColumns = memo(
         <FormItem
           name={'right' + joinIndex + conditionsIndex}
           rules={[{ required: true, message: t('selectField') }]}
-          getValueFromEvent={e => (e ? e.slice(-1) : '')}
+{/*           getValueFromEvent={e => (e ? e.slice(-1) : '')} */}
         >
           <ColumnSelect
             popupMatchSelectWidth={false}
             allowClear
             placeholder={t('selectField')}
             treeDefaultExpandAll={true}
-            value={joinTable.conditions?.[conditionsIndex]?.right.slice(-1)}
+            fieldNames={{ label: 'title', value: 'key', children: 'children' }}
+            value={joinTable.conditions?.[conditionsIndex]?.right}
             onChange={columnName => {
               allowManage &&
-                onChange(columnName || [], 'right', conditionsIndex);
+                onChange(columnName?.split('.') || [], 'right', conditionsIndex);
             }}
             treeIcon={true}
             treeData={handleRightColumn()}
